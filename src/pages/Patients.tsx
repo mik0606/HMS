@@ -40,6 +40,8 @@ import { useNavigate } from 'react-router-dom';
 const Patients = () => {
   const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
 
   // Stats Configuration
   const stats = [
@@ -82,11 +84,22 @@ const Patients = () => {
     return styles[status as keyof typeof styles] || "bg-gray-100 text-gray-600";
   };
 
-  return (
-    <div className="h-full bg-gray-50 p-6 space-y-6 overflow-y-auto">
+  // Pagination Logic
+  const totalPages = Math.ceil(mockPatientsList.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentPatients = mockPatientsList.slice(startIndex, startIndex + itemsPerPage);
 
-      {/* 2. Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  return (
+    <div className="h-full bg-gray-50 p-6 flex flex-col space-y-6 overflow-hidden">
+
+      {/* 2. Stats Cards - Fixed Height */}
+      <div className="flex-none grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, idx) => (
           <Card key={idx} className="border-none shadow-sm">
             <CardContent className="p-4 flex items-center justify-between">
@@ -102,11 +115,11 @@ const Patients = () => {
         ))}
       </div>
 
-      {/* 3. Patient Table */}
-      <Card className="border-none shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+      {/* 3. Patient Table - Fills remaining space */}
+      <Card className="flex-1 flex flex-col min-h-0 border-none shadow-sm overflow-hidden">
+        <div className="flex-1 overflow-hidden relative">
           <Table>
-            <TableHeader className="bg-[#F8FAFC]">
+            <TableHeader className="bg-[#F8FAFC] sticky top-0 z-10">
               <TableRow className="border-b-gray-100">
                 <TableHead className="w-[50px]"></TableHead>
                 <TableHead className="font-semibold text-gray-600">Name</TableHead>
@@ -120,7 +133,7 @@ const Patients = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockPatientsList.map((patient) => (
+              {currentPatients.map((patient) => (
                 <TableRow key={patient.id} className="hover:bg-gray-50 border-b-gray-50">
                   <TableCell>
                     <input type="checkbox" className="rounded border-gray-300" />
@@ -176,25 +189,54 @@ const Patients = () => {
           </Table>
         </div>
 
-        {/* 4. Pagination (Static for UI) */}
-        <div className="flex items-center justify-between px-4 py-4 border-t border-gray-100">
+        {/* 4. Pagination (Fixed at bottom) */}
+        <div className="flex-none flex items-center justify-between px-4 py-4 border-t border-gray-100 bg-white">
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" className="text-gray-500" disabled>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-gray-500"
+              disabled={currentPage === 1}
+              onClick={() => handlePageChange(currentPage - 1)}
+            >
               &lt; Previous
             </Button>
             <div className="flex items-center gap-1">
-              <Button variant="secondary" size="sm" className="bg-[#0EA5E9] text-white hover:bg-[#0284C7] h-8 w-8">1</Button>
-              <Button variant="ghost" size="sm" className="h-8 w-8 text-gray-600">2</Button>
-              <Button variant="ghost" size="sm" className="h-8 w-8 text-gray-600">3</Button>
-              <span className="text-gray-400">...</span>
-              <Button variant="ghost" size="sm" className="h-8 w-8 text-gray-600">32</Button>
+              {[...Array(Math.min(3, totalPages))].map((_, i) => (
+                <Button
+                  key={i + 1}
+                  variant={currentPage === i + 1 ? "secondary" : "ghost"}
+                  size="sm"
+                  className={`h-8 w-8 ${currentPage === i + 1 ? "bg-[#0EA5E9] text-white hover:bg-[#0284C7]" : "text-gray-600"}`}
+                  onClick={() => handlePageChange(i + 1)}
+                >
+                  {i + 1}
+                </Button>
+              ))}
+              {totalPages > 3 && <span className="text-gray-400">...</span>}
+              {totalPages > 3 && (
+                <Button
+                  variant={currentPage === totalPages ? "secondary" : "ghost"}
+                  size="sm"
+                  className={`h-8 w-8 ${currentPage === totalPages ? "bg-[#0EA5E9] text-white hover:bg-[#0284C7]" : "text-gray-600"}`}
+                  onClick={() => handlePageChange(totalPages)}
+                >
+                  {totalPages}
+                </Button>
+              )}
             </div>
-            <Button variant="ghost" size="sm" className="text-gray-600">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-gray-600"
+              disabled={currentPage === totalPages}
+              onClick={() => handlePageChange(currentPage + 1)}
+            >
               Next &gt;
             </Button>
           </div>
           <div className="flex items-center gap-4 text-sm text-gray-500">
-            <span>Showing 1 to 15 of 352 entries</span>
+            <span>Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, mockPatientsList.length)} of {mockPatientsList.length} entries</span>
             <Button variant="outline" size="sm" className="h-8">Show All</Button>
           </div>
         </div>

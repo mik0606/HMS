@@ -570,3 +570,13 @@ export const mockPatientsList = [
     email: "chandler@example.com"
   }
 ];
+
+export const mockStaffList = [
+  { id: 'EMP7935', name: 'Will Ben Chen', designation: 'Lab Technician', department: 'Support', contact: '+917752648992', status: 'Available' },
+  { id: 'EMP4873', name: 'Arun Krishnan', designation: 'Lab Technician', department: 'Support', contact: '+917291691024', status: 'Available' },
+  { id: 'ADM749', name: 'Banu Admin', designation: 'Hospital Admin', department: 'Administration', contact: '+919876543299', status: 'Available' },
+  { id: 'EMP4446', name: 'Deepa Menon', designation: 'Medical Assistant', department: 'Laboratory', contact: '+919959265668', status: 'Available' },
+  { id: 'DOC859', name: 'Doctor User', designation: 'Doctor', department: 'Medical', contact: 'N/A', status: 'Available' },
+  { id: 'STF-003', name: 'Dr. Bruce Wayne', designation: 'Surgeon', department: 'Surgery', contact: '8795578624', status: 'On Call' },
+  { id: 'DOC183', name: 'Dr. Sanjit Kumar', designation: 'Gastroenterology', department: 'Gastroenterology', contact: '+919876543210', status: 'Available' },
+];

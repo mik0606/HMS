@@ -153,6 +153,7 @@ const Header = ({ onMenuClick }: HeaderProps) => {
                 </DropdownMenu>
             </div>
         </header>
+
     );
 };
 
