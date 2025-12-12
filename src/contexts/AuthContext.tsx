@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, UserRole } from '@/types';
+import { User } from '@/types';
 
 interface AuthContextType {
   user: User | null;
@@ -11,86 +11,107 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock users for demo
-const MOCK_USERS: Record<string, User> = {
-  'admin@airswift.com': {
+interface MockUser extends User {
+  password?: string;
+}
+
+// Editable Users Array
+// You can change email, password, name, and role here anytime.
+const USERS: MockUser[] = [
+  {
     id: '1',
     email: 'admin@airswift.com',
+    password: 'demo@123',
     name: 'Sarah Mitchell',
     role: 'super_admin',
     phone: '+1-555-0101',
   },
-  'dispatcher@airswift.com': {
-    id: '2',
-    email: 'dispatcher@airswift.com',
-    name: 'Michael Chen',
-    role: 'dispatcher',
-    phone: '+1-555-0102',
-  },
-  'hospital@general.com': {
-    id: '3',
-    email: 'hospital@general.com',
-    name: 'Dr. Emily Rodriguez',
-    role: 'hospital_staff',
-    phone: '+1-555-0103',
-    hospitalId: 'h1',
-  },
-  'doctor@airswift.com': {
+  {
     id: '4',
     email: 'doctor@airswift.com',
+    password: 'demo@123',
     name: 'Dr. James Wilson',
-    role: 'medical_team',
+    role: 'doctor',
     phone: '+1-555-0104',
   },
-  'airline@skymedic.com': {
-    id: '5',
-    email: 'airline@skymedic.com',
-    name: 'David Park',
-    role: 'airline_coordinator',
-    phone: '+1-555-0105',
-    airlineId: 'a1',
+  {
+    id: '6',
+    email: 'pharmacy@airswift.com',
+    password: 'demo@123',
+    name: 'Ph. Robert Chen',
+    role: 'pharmacy',
+    phone: '+1-555-0106',
   },
-};
+  {
+    // Fixed: Pathologist email matches what user likely expects or can be edited easily
+    id: '7',
+    email: 'pathologist@airswift.com',
+    password: 'demo@123',
+    name: 'Dr. Lisa Wong',
+    role: 'pathologist',
+    phone: '+1-555-0107',
+  },
+];
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Always start logged out
-    localStorage.removeItem("currentUser");
-    setUser(null);
+    // Check local storage for persistent login
+    const storedUser = localStorage.getItem("currentUser");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Failed to parse stored user", error);
+        localStorage.removeItem("currentUser");
+      }
+    }
     setIsLoading(false);
   }, []);
 
-
-  // ✅ ONLY LOGIN FUNCTION IS UPDATED — EVERYTHING ELSE IS SAME
   const login = async (email: string, password: string) => {
     setIsLoading(true);
+    // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    const userEmail = email.toLowerCase();
-    const mockUser = MOCK_USERS[userEmail];
+    try {
+      const normalizedEmail = email.toLowerCase().trim();
 
-    // SUPER ADMIN LOGIN CREDENTIALS
-    const SUPER_ADMIN_EMAIL = "admin@airswift.com";
-    const SUPER_ADMIN_PASSWORD = "demo@123"; // keep same as your demo list
+      // Find user in the array
+      const foundUser = USERS.find(u => u.email.toLowerCase() === normalizedEmail);
 
-    // ❌ Reject wrong email / wrong password / wrong role  
-    if (!mockUser || mockUser.email !== SUPER_ADMIN_EMAIL || password !== SUPER_ADMIN_PASSWORD) {
+      if (!foundUser) {
+        throw new Error("No user found with this email");
+      }
+
+      // Check password
+      // Default to 'demo@123' if no password property is set on the user object, 
+      // but strictly check if it IS set.
+      const validPassword = foundUser.password || 'demo@123';
+
+      if (password !== validPassword) {
+        throw new Error("Invalid password");
+      }
+
+      // Successful login
+      const userToStore = { ...foundUser };
+      delete (userToStore as any).password; // Don't store password in state/localstorage
+
+      setUser(userToStore);
+      localStorage.setItem("currentUser", JSON.stringify(userToStore));
+    } catch (error) {
+      // Re-throw to be handled by the UI
+      throw error;
+    } finally {
       setIsLoading(false);
-      throw new Error("Invalid email or password");
     }
-
-    // ✔ Successful login
-    setUser(mockUser);
-    localStorage.setItem("currentUser", JSON.stringify(mockUser));
-    setIsLoading(false);
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('currentUser');
+    localStorage.removeItem("currentUser");
   };
 
   return (

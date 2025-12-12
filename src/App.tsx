@@ -20,6 +20,18 @@ import PatientProfile from "./pages/PatientProfile";
 import Settings from "./pages/Settings";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
+import DoctorDashboard from "./pages/doctor/Dashboard";
+import DoctorPatients from "./pages/doctor/Patients";
+import DoctorSchedule from "./pages/doctor/Schedule";
+import DoctorSettings from "./pages/doctor/Settings";
+import PharmacyDashboard from "./pages/pharmacy/Dashboard";
+import PharmacyMedicine from "./pages/pharmacy/Medicine";
+import PharmacyPrescription from "./pages/pharmacy/Prescription";
+import PharmacySettings from "./pages/pharmacy/Settings";
+import PathologistDashboard from "./pages/pathologist/Dashboard";
+import PathologistTestReports from "./pages/pathologist/TestReports";
+import PathologistPatients from "./pages/pathologist/Patients";
+import PathologistSettings from "./pages/pathologist/Settings";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +57,25 @@ const App = () => (
             <Route path="/pathology" element={<ProtectedRoute allowedRoles={['super_admin']}> <DashboardLayout> <Pathology /> </DashboardLayout> </ProtectedRoute>} />
             <Route path="/pharmacy" element={<ProtectedRoute allowedRoles={['super_admin']}> <DashboardLayout> <Pharmacy /> </DashboardLayout> </ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute allowedRoles={['super_admin']}> <DashboardLayout> <Settings /> </DashboardLayout> </ProtectedRoute>} />
+
+            {/* Doctor Routes */}
+            <Route path="/doctor/dashboard" element={<ProtectedRoute allowedRoles={['doctor']}> <DashboardLayout> <DoctorDashboard /> </DashboardLayout> </ProtectedRoute>} />
+            <Route path="/doctor/patients" element={<ProtectedRoute allowedRoles={['doctor']}> <DashboardLayout> <DoctorPatients /> </DashboardLayout> </ProtectedRoute>} />
+            <Route path="/doctor/schedule" element={<ProtectedRoute allowedRoles={['doctor']}> <DashboardLayout> <DoctorSchedule /> </DashboardLayout> </ProtectedRoute>} />
+            <Route path="/doctor/settings" element={<ProtectedRoute allowedRoles={['doctor']}> <DashboardLayout> <DoctorSettings /> </DashboardLayout> </ProtectedRoute>} />
+
+            {/* Pharmacy Routes */}
+            <Route path="/pharmacy/dashboard" element={<ProtectedRoute allowedRoles={['pharmacy']}> <DashboardLayout> <PharmacyDashboard /> </DashboardLayout> </ProtectedRoute>} />
+            <Route path="/pharmacy/medicine" element={<ProtectedRoute allowedRoles={['pharmacy']}> <DashboardLayout> <PharmacyMedicine /> </DashboardLayout> </ProtectedRoute>} />
+            <Route path="/pharmacy/prescription" element={<ProtectedRoute allowedRoles={['pharmacy']}> <DashboardLayout> <PharmacyPrescription /> </DashboardLayout> </ProtectedRoute>} />
+            <Route path="/pharmacy/settings" element={<ProtectedRoute allowedRoles={['pharmacy']}> <DashboardLayout> <PharmacySettings /> </DashboardLayout> </ProtectedRoute>} />
+
+            {/* Pathologist Routes */}
+            <Route path="/pathologist/dashboard" element={<ProtectedRoute allowedRoles={['pathologist']}> <DashboardLayout> <PathologistDashboard /> </DashboardLayout> </ProtectedRoute>} />
+            <Route path="/pathologist/reports" element={<ProtectedRoute allowedRoles={['pathologist']}> <DashboardLayout> <PathologistTestReports /> </DashboardLayout> </ProtectedRoute>} />
+            <Route path="/pathologist/patients" element={<ProtectedRoute allowedRoles={['pathologist']}> <DashboardLayout> <PathologistPatients /> </DashboardLayout> </ProtectedRoute>} />
+            <Route path="/pathologist/settings" element={<ProtectedRoute allowedRoles={['pathologist']}> <DashboardLayout> <PathologistSettings /> </DashboardLayout> </ProtectedRoute>} />
+
 
             <Route path="*" element={<NotFound />} />
           </Routes>

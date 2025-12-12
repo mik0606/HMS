@@ -49,15 +49,30 @@ export default function Login() {
   }, [generateCaptcha]);
 
   useEffect(() => {
-    if (isAuthenticated && !isLoading) {
-      if (user?.role === 'super_admin') {
-        navigate('/dashboard', { replace: true });
-      } else {
-        logout();
-        setError('Access restricted to Super Admin only.');
+    // Only redirect if we are fully done loading and truly authenticated
+    if (!isLoading && isAuthenticated && user) {
+      // Small safety check to ensure we don't redirect if user is somehow null (though type check handles it)
+      const role = user.role;
+
+      switch (role) {
+        case 'super_admin':
+          navigate('/dashboard', { replace: true });
+          break;
+        case 'doctor':
+          navigate('/doctor/dashboard', { replace: true });
+          break;
+        case 'pharmacy':
+          navigate('/pharmacy/dashboard', { replace: true });
+          break;
+        case 'pathologist':
+          navigate('/pathologist/dashboard', { replace: true });
+          break;
+        default:
+          navigate('/dashboard', { replace: true });
+          break;
       }
     }
-  }, [isAuthenticated, user, isLoading, navigate, logout]);
+  }, [isAuthenticated, user, isLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

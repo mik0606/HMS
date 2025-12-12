@@ -1,6 +1,9 @@
-export type UserRole = 
+export type UserRole =
   | 'super_admin'
   | 'admin'
+  | 'doctor'
+  | 'pharmacy'
+  | 'pathologist'
   | 'dispatcher'
   | 'hospital_staff'
   | 'medical_team'
@@ -8,7 +11,7 @@ export type UserRole =
   | 'billing'
   | 'patient_family';
 
-export type BookingStatus = 
+export type BookingStatus =
   | 'requested'
   | 'clinical_review'
   | 'dispatch_review'

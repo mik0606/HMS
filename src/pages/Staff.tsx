@@ -64,44 +64,24 @@ const Staff = () => {
         }
     };
 
+
+
     // ------------------------------------------------------------------
     // **Main Header Section**
     // ------------------------------------------------------------------
-    const MainHeader = () => (
-        <div className="flex-none p-4 border-b border-gray-100 bg-white">
-            <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900">STAFF</h2>
-                <div className="flex items-center space-x-3">
-                    <div className="relative">
-                        <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-                        <Input
-                            type="text"
-                            placeholder="Search Staff..."
-                            className="pl-10 pr-4 py-2 w-64 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        />
-                    </div>
-                    <Button variant="outline" size="icon" className="h-10 w-10 text-gray-600 border-gray-300 hover:bg-gray-100">
-                        <Filter className="w-5 h-5" />
-                    </Button>
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
-                        <Plus className="w-5 h-5" /> Add New
-                    </Button>
-                </div>
-            </div>
-        </div>
-    );
+
 
     return (
-        <div className="h-full bg-gray-50 p-6 flex flex-col space-y-0 overflow-hidden">
+        <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
 
             {/* The main Staff Table Card */}
             <Card className="flex-1 flex flex-col min-h-0 border-none shadow-lg overflow-hidden rounded-xl">
 
                 {/* 1. Custom Header (STAFF, Search, Add New) */}
-                <MainHeader />
+
 
                 {/* 2. Table Body - Fills remaining space */}
-                <div className="flex-1 overflow-auto relative">
+                <div className="flex-1 relative">
                     <Table>
                         <TableHeader className="bg-[#F8FAFC] sticky top-0 z-10">
                             <TableRow className="border-b-gray-100">

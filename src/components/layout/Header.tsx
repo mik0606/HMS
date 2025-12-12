@@ -13,18 +13,27 @@ import { useLocation } from 'react-router-dom';
 
 interface HeaderProps {
     onMenuClick: () => void;
+    toggleSidebar?: () => void;
+    isCollapsed?: boolean;
 }
 
-const Header = ({ onMenuClick }: HeaderProps) => {
+const Header = ({ onMenuClick, toggleSidebar, isCollapsed }: HeaderProps) => {
     const { user, logout } = useAuth();
     const location = useLocation();
 
     const isAppointmentsPage = location.pathname.includes("appointments");
     const isPatientsPage = location.pathname.includes("patients");
+    const isStaffPage = location.pathname.includes("staff");
+
 
     const getPageTitle = () => {
         const path = location.pathname.split('/')[1];
         if (!path) return 'Dashboard';
+        // Handle nested paths or specific role prefixes if needed, but simple capitalization works for now
+        // e.g. /doctor/dashboard -> Doctor
+        if (path === 'doctor') return 'Doctor Portal';
+        if (path === 'pharmacy') return 'Pharmacy Portal';
+        if (path === 'pathologist') return 'Pathology Portal';
         return path.charAt(0).toUpperCase() + path.slice(1);
     };
 
@@ -33,6 +42,7 @@ const Header = ({ onMenuClick }: HeaderProps) => {
 
             {/* LEFT SIDE */}
             <div className="flex items-center gap-4">
+                {/* Mobile Menu Toggle */}
                 <Button
                     variant="ghost"
                     size="icon"
@@ -41,6 +51,8 @@ const Header = ({ onMenuClick }: HeaderProps) => {
                 >
                     <Menu className="w-6 h-6" />
                 </Button>
+
+
 
                 <h1 className="text-xl font-semibold text-gray-800">
                     {getPageTitle()}
@@ -98,6 +110,32 @@ const Header = ({ onMenuClick }: HeaderProps) => {
                         {/* New Appointment */}
                         <Button className="bg-[#4F46E5] hover:bg-[#4338ca] text-white rounded-lg gap-2">
                             <Plus className="w-4 h-4" /> New Appointment
+                        </Button>
+                    </div>
+                )}
+                {/* ===========================
+    STAFF PAGE HEADER COMPONENTS
+=========================== */}
+                {isStaffPage && (
+                    <div className="flex items-center gap-3">
+
+                        {/* Search Staff */}
+                        <div className="relative hidden md:block">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <input
+                                placeholder="Search Staff..."
+                                className="pl-9 w-64 bg-white border-gray-200 rounded-lg h-10 text-sm focus:ring-blue-500"
+                            />
+                        </div>
+
+                        {/* Filter */}
+                        <Button variant="outline" className="gap-2 bg-white border-gray-200 text-gray-600">
+                            <Filter className="w-4 h-4" /> Filter
+                        </Button>
+
+                        {/* Add New Staff */}
+                        <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
+                            <Plus className="w-5 h-5" /> Add New
                         </Button>
                     </div>
                 )}
