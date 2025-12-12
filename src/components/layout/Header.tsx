@@ -1,4 +1,4 @@
-import { Menu, Bell, Search, Plus, Filter, Download, LayoutGrid, List } from 'lucide-react';
+import { Menu, Bell, Search, Plus, Filter, Download, LayoutGrid, List, RotateCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -17,22 +17,22 @@ interface HeaderProps {
     isCollapsed?: boolean;
 }
 
-const Header = ({ onMenuClick, toggleSidebar, isCollapsed }: HeaderProps) => {
+const Header = ({ onMenuClick }: HeaderProps) => {
     const { user, logout } = useAuth();
     const location = useLocation();
 
+    // Detect current page
     const isAppointmentsPage = location.pathname.includes("appointments");
     const isPatientsPage = location.pathname.includes("patients");
     const isStaffPage = location.pathname.includes("staff");
+    const isPharmacyPage = location.pathname.includes("pharmacy");
 
-
+    // Page title based on route
     const getPageTitle = () => {
         const path = location.pathname.split('/')[1];
         if (!path) return 'Dashboard';
-        // Handle nested paths or specific role prefixes if needed, but simple capitalization works for now
-        // e.g. /doctor/dashboard -> Doctor
         if (path === 'doctor') return 'Doctor Portal';
-        if (path === 'pharmacy') return 'Pharmacy Portal';
+        if (path === 'pharmacy') return 'Pharmacy';
         if (path === 'pathologist') return 'Pathology Portal';
         return path.charAt(0).toUpperCase() + path.slice(1);
     };
@@ -52,8 +52,6 @@ const Header = ({ onMenuClick, toggleSidebar, isCollapsed }: HeaderProps) => {
                     <Menu className="w-6 h-6" />
                 </Button>
 
-
-
                 <h1 className="text-xl font-semibold text-gray-800">
                     {getPageTitle()}
                 </h1>
@@ -62,8 +60,8 @@ const Header = ({ onMenuClick, toggleSidebar, isCollapsed }: HeaderProps) => {
             {/* RIGHT SIDE */}
             <div className="flex items-center gap-4">
 
-                {/* ===========================
-                    PATIENT PAGE HEADER COMPONENTS
+                {/* ============================
+                    PATIENT PAGE HEADER UI
                 ============================ */}
                 {isPatientsPage && (
                     <div className="flex items-center gap-3">
@@ -82,68 +80,92 @@ const Header = ({ onMenuClick, toggleSidebar, isCollapsed }: HeaderProps) => {
                             <Filter className="w-4 h-4" /> Filter
                         </Button>
 
-                        {/* Export Button */}
+                        {/* Export */}
                         <Button className="gap-2 bg-[#0EA5E9] hover:bg-[#0284C7] text-white">
                             <Download className="w-4 h-4" /> Export
                         </Button>
-
-                        {/* View Mode Toggle */}
-
                     </div>
                 )}
 
-                {/* ===========================
-                    APPOINTMENT PAGE HEADER UI
+                {/* ============================
+                    APPOINTMENTS PAGE HEADER UI
                 ============================ */}
                 {isAppointmentsPage && (
                     <div className="flex items-center gap-3">
-
-                        {/* Search */}
                         <div className="relative hidden md:block">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                             <input
-                                placeholder="Search Appointments..."
+                                placeholder="Search appointments..."
                                 className="pl-9 w-64 bg-white border-gray-200 rounded-lg h-10 text-sm focus:ring-indigo-500"
                             />
                         </div>
 
-                        {/* New Appointment */}
                         <Button className="bg-[#4F46E5] hover:bg-[#4338ca] text-white rounded-lg gap-2">
                             <Plus className="w-4 h-4" /> New Appointment
                         </Button>
                     </div>
                 )}
-                {/* ===========================
-    STAFF PAGE HEADER COMPONENTS
-=========================== */}
+
+                {/* ============================
+                    STAFF PAGE HEADER UI
+                ============================ */}
                 {isStaffPage && (
                     <div className="flex items-center gap-3">
-
-                        {/* Search Staff */}
                         <div className="relative hidden md:block">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                             <input
-                                placeholder="Search Staff..."
+                                placeholder="Search staff..."
                                 className="pl-9 w-64 bg-white border-gray-200 rounded-lg h-10 text-sm focus:ring-blue-500"
                             />
                         </div>
 
-                        {/* Filter */}
                         <Button variant="outline" className="gap-2 bg-white border-gray-200 text-gray-600">
                             <Filter className="w-4 h-4" /> Filter
                         </Button>
 
-                        {/* Add New Staff */}
                         <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2">
                             <Plus className="w-5 h-5" /> Add New
                         </Button>
                     </div>
                 )}
 
-                {/* ===========================
-                    DEFAULT SEARCH (OTHER PAGES)
+                {/* ============================
+                    PHARMACY PAGE HEADER UI
                 ============================ */}
-                {!isPatientsPage && !isAppointmentsPage && (
+                {isPharmacyPage && (
+                    <div className="flex items-center gap-3">
+
+                        {/* Search Medicines */}
+                        <div className="relative hidden md:block">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <input
+                                placeholder="Search medicines..."
+                                className="pl-9 w-64 bg-white border-gray-200 rounded-lg h-10 text-sm focus:ring-blue-500"
+                            />
+                        </div>
+
+                        {/* Category Filter */}
+                        <Button variant="outline" className="gap-2 bg-white border-gray-200 text-gray-600">
+                            <Filter className="w-4 h-4" /> Category
+                        </Button>
+
+                        {/* Refresh */}
+                        <Button variant="outline" size="icon" className="h-10 w-10 bg-white border-gray-200">
+                            <RotateCw className="w-4 h-4" />
+                        </Button>
+
+                        {/* Add Medicine */}
+                        <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 px-4">
+                            <Plus className="w-4 h-4" /> Add Medicine
+                        </Button>
+
+                    </div>
+                )}
+
+                {/* ============================
+                    DEFAULT SEARCH FOR OTHER PAGES
+                ============================ */}
+                {!isPatientsPage && !isAppointmentsPage && !isStaffPage && !isPharmacyPage && (
                     <div className="hidden md:flex relative">
                         <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input
@@ -174,9 +196,7 @@ const Header = ({ onMenuClick, toggleSidebar, isCollapsed }: HeaderProps) => {
                         <DropdownMenuLabel className="font-normal">
                             <div className="flex flex-col space-y-1">
                                 <p className="text-sm font-medium leading-none">{user?.name}</p>
-                                <p className="text-xs leading-none text-muted-foreground">
-                                    {user?.email}
-                                </p>
+                                <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
                             </div>
                         </DropdownMenuLabel>
 
@@ -191,7 +211,6 @@ const Header = ({ onMenuClick, toggleSidebar, isCollapsed }: HeaderProps) => {
                 </DropdownMenu>
             </div>
         </header>
-
     );
 };
 

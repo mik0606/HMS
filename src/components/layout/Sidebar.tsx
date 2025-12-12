@@ -41,10 +41,12 @@ const Sidebar = ({ isOpen, onClose, isCollapsed, toggleCollapse }: SidebarProps)
             { title: 'Settings', path: '/settings', icon: Settings },
         ],
         doctor: [
-            { title: 'Doctor', path: '/doctor/dashboard', icon: LayoutDashboard },
-            { title: 'Patients', path: '/doctor/patients', icon: Users },
+            { title: 'Dashboard', path: '/doctor/dashboard', icon: LayoutDashboard },
+            { title: 'Patient', path: '/doctor/patient', icon: Users },
+            { title: 'Appointment', path: '/doctor/appointment', icon: Users },
             { title: 'My Schedule', path: '/doctor/schedule', icon: Calendar },
             { title: 'Settings', path: '/doctor/settings', icon: Settings },
+
         ],
         pharmacy: [
             { title: 'Dashboard', path: '/pharmacy/dashboard', icon: LayoutDashboard },
