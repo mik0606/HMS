@@ -5,9 +5,10 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { MdClose, MdEdit, MdPerson, MdMedicalServices, MdDescription, MdScience, MdPayment } from 'react-icons/md';
+import { MdClose, MdEdit, MdPerson, MdMedicalServices, MdDescription, MdScience, MdPayment, MdEvent, MdAccessTime, MdCategory, MdLocationOn } from 'react-icons/md';
 import './AppointmentViewModal.css';
 import appointmentsService from '../../services/appointmentsService';
+// import PatientProfileHeader from '../patient/PatientProfileHeader'; // REMOVED
 
 const AppointmentViewModal = ({ isOpen, onClose, appointmentId, onEdit, onPatientClick }) => {
   const [appointment, setAppointment] = useState(null);
@@ -35,27 +36,27 @@ const AppointmentViewModal = ({ isOpen, onClose, appointmentId, onEdit, onPatien
     setError('');
     try {
       const data = await appointmentsService.fetchAppointmentById(appointmentId);
-      
+
       // Transform nested patient object if present
       const transformedData = { ...data };
       if (data.patientId && typeof data.patientId === 'object') {
         const patient = data.patientId;
         transformedData.clientName = `${patient.firstName || ''} ${patient.lastName || ''}`.trim();
-        
+
         // Handle phone (could be object or string)
         if (typeof patient.phone === 'object') {
           transformedData.phoneNumber = patient.phone?.phone || patient.phone?.number || '';
         } else {
           transformedData.phoneNumber = patient.phone || patient.phoneNumber || '';
         }
-        
+
         // Handle email (could be object or string)
         if (typeof patient.email === 'object') {
           transformedData.patientEmail = patient.email?.email || patient.email?.address || '';
         } else {
           transformedData.patientEmail = patient.email || '';
         }
-        
+
         transformedData.patientObjectId = patient._id;
         transformedData.patientId = patient.metadata?.patientCode || patient._id || 'N/A';
         if (patient.gender) {
@@ -64,14 +65,22 @@ const AppointmentViewModal = ({ isOpen, onClose, appointmentId, onEdit, onPatien
         if (patient.metadata) {
           transformedData.metadata = { ...transformedData.metadata, ...patient.metadata };
         }
+
+        // Extract address and profession for Header
+        if (patient.address) {
+          transformedData.address = patient.address;
+        }
+        if (patient.profession || patient.occupation) {
+          transformedData.profession = patient.profession || patient.occupation;
+        }
       }
-      
+
       // Transform nested doctor object if present
       if (data.doctorId && typeof data.doctorId === 'object') {
         const doctor = data.doctorId;
         transformedData.doctorName = `${doctor.firstName || ''} ${doctor.lastName || ''}`.trim();
       }
-      
+
       setAppointment(transformedData);
     } catch (err) {
       setError(err.message || 'Failed to load appointment');
@@ -117,80 +126,53 @@ const AppointmentViewModal = ({ isOpen, onClose, appointmentId, onEdit, onPatien
           </div>
         ) : appointment ? (
           <>
-            {/* Header Card */}
-            <div className="appointment-view-header">
-              <div className="header-left">
-                <div className="patient-avatar-large">
-                  <span>{getGenderIcon(appointment.gender || appointment.metadata?.gender)}</span>
-                </div>
-                <div className="patient-info-header">
-                  <h2 
-                    className="patient-name-clickable"
-                    onClick={() => {
-                      const patientId = appointment.patientObjectId || 
-                                       (typeof appointment.patientId === 'object' ? appointment.patientId?._id : appointment.patientId);
-                      onPatientClick && patientId && onPatientClick(patientId);
-                    }}
-                  >
-                    {appointment.clientName || 'Unknown Patient'}
-                  </h2>
-                  <div className="patient-meta">
-                    <span>ID: {
-                      (() => {
-                        if (typeof appointment.patientId === 'object' && appointment.patientId) {
-                          return String(appointment.patientId.metadata?.patientCode || appointment.patientId._id || 'N/A');
-                        }
-                        return String(appointment.patientId || 'N/A');
-                      })()
-                    }</span>
-                    <span>•</span>
-                    <span>{
-                      (() => {
-                        if (typeof appointment.gender === 'object') {
-                          return 'N/A';
-                        }
-                        return String(appointment.gender || appointment.metadata?.gender || 'N/A');
-                      })()
-                    }</span>
-                  </div>
+            {/* Blue Appointment Summary Header */}
+            <div className="appt-summary-header">
+              <div className="appt-summary-item">
+                <div className="appt-icon-box"><MdEvent /></div>
+                <div className="appt-info">
+                  <span className="appt-label">Date</span>
+                  <span className="appt-value">{String(appointment.date || 'Not set')}</span>
                 </div>
               </div>
-              <div className="header-right">
-                <div 
-                  className="status-badge-large" 
-                  style={{ 
-                    backgroundColor: `${getStatusColor(appointment.status)}20`,
-                    color: getStatusColor(appointment.status)
-                  }}
-                >
-                  {String(appointment.status || 'Unknown')}
+
+              <div className="appt-summary-item">
+                <div className="appt-icon-box"><MdAccessTime /></div>
+                <div className="appt-info">
+                  <span className="appt-label">Time</span>
+                  <span className="appt-value">{String(appointment.time || 'Not set')}</span>
                 </div>
-                <button className="btn-edit-header" onClick={() => onEdit(appointment)}>
-                  <MdEdit size={18} />
-                  <span>Edit</span>
-                </button>
+              </div>
+
+              <div className="appt-summary-item">
+                <div className="appt-icon-box"><MdCategory /></div>
+                <div className="appt-info">
+                  <span className="appt-label">Type</span>
+                  <span className="appt-value">{String(appointment.appointmentType || 'General')}</span>
+                </div>
+              </div>
+
+              <div className="appt-summary-item">
+                <div className="appt-icon-box"><MdLocationOn /></div>
+                <div className="appt-info">
+                  <span className="appt-label">Mode</span>
+                  <span className="appt-value">{String(appointment.mode || 'In-clinic')}</span>
+                </div>
               </div>
             </div>
 
-            {/* Appointment Details */}
-            <div className="appointment-details-card">
-              <div className="detail-item">
-                <span className="detail-label">Date:</span>
-                <span className="detail-value">{String(appointment.date || 'Not set')}</span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-label">Time:</span>
-                <span className="detail-value">{String(appointment.time || 'Not set')}</span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-label">Type:</span>
-                <span className="detail-value">{String(appointment.appointmentType || 'General')}</span>
-              </div>
-              <div className="detail-item">
-                <span className="detail-label">Mode:</span>
-                <span className="detail-value">{String(appointment.mode || 'In-clinic')}</span>
-              </div>
+            {/* Edit Button Row (Below Header) */}
+            <div className="appt-actions-row">
+              <button
+                className="btn-edit-appt"
+                onClick={() => onEdit && onEdit(appointment)}
+              >
+                <MdEdit size={16} /> Edit Appointment
+              </button>
             </div>
+
+            {/* Appointment Details - REMOVED (moved to header) */}
+
 
             {/* Tabs */}
             <div className="appointment-tabs-section">

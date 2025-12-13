@@ -1,0 +1,295 @@
+/* PatientProfileHeader.css - Compact Layout */
+
+.profile-header-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    /* Zero gap between content and footer */
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    padding: 12px;
+    /* Overall internal padding */
+    margin-bottom: 8px;
+    /* Small margin to sit right above tabs */
+}
+
+/* Modal Variant overrides */
+.profile-header-container.modal-header-container {
+    border: none;
+    background: transparent;
+    padding: 0 0 12px 0;
+    /* Remove top/side padding, keep bottom for separation */
+    margin-bottom: 0;
+    /* No margin below header in modal */
+    border-radius: 0;
+}
+
+.profile-header-content {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    width: 100%;
+}
+
+/* --- Left Column: Avatar --- */
+.header-left-col {
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+
+.avatar-wrapper {
+    position: relative;
+    width: 56px;
+    /* Small avatar */
+    height: 56px;
+}
+
+.main-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    /* Smooth rounded square */
+    object-fit: cover;
+    border: 1px solid #e2e8f0;
+}
+
+.gender-badge {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+}
+
+/* Right Column */
+.header-right-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    /* Vertical spacing between rows */
+}
+
+/* Row 1: Name + Actions */
+.row-identity-with-edit {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.name-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.name-text {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.contact-icons {
+    display: flex;
+    gap: 6px;
+}
+
+.icon-btn-xs {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    background: #f1f5f9;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.icon-btn-xs:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.meta-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+}
+
+.meta-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    /* Aggressively small */
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+/* Edit Button */
+.edit-btn-top {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    background: white;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #475569;
+}
+
+.edit-btn-top:hover {
+    background: #f8fafc;
+    color: #1e293b;
+}
+
+/* Row 2: Vitals (Default) */
+.vitals-row-below-name {
+    display: flex;
+    gap: 8px;
+    /* Tighter gap */
+    margin-top: 2px;
+}
+
+.vital-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    /* Slightly smaller radius */
+    padding: 6px 10px;
+    /* Compact padding */
+    min-width: 80px;
+    /* Reduced width */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Row 2 Variant: Appointment Slots (Modal) */
+.appt-slots-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+.appt-box {
+    background: #ffffff;
+    /* Or keep transparent/white */
+    min-width: 85px;
+    /* Slightly adaptable */
+}
+
+/* Shared Vital/Appt Styles */
+.v-label {
+    font-size: 10px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.v-val {
+    font-size: 14px;
+    font-weight: 700;
+    color: #334155;
+    line-height: 1.3;
+}
+
+.v-val.small-text {
+    font-size: 13px;
+    /* Slightly smaller for detailed text like dates */
+}
+
+.v-val small {
+    font-size: 10px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+/* Row 3: Diagnosis & Barriers */
+.row-vital-tags {
+    margin-top: 4px;
+}
+
+.tags-block {
+    display: flex;
+    flex-direction: row;
+    /* Horizontal layout for compact */
+    gap: 16px;
+    align-items: center;
+}
+
+.tag-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tag-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.tag-list {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.tag-item {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.tag-item.condition {
+    background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #ffedd5;
+}
+
+.tag-item.barrier {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #dbeafe;
+}
+
+/* Row 4: Appointment Meta (Default Bottom) */
+.row-appt-details {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+    padding-top: 8px;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.appt-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: #475569;
+}
